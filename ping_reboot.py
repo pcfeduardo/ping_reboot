@@ -5,6 +5,8 @@ import time
 import os
 import sys
 fail_count = 0
+log_directory = '/var/log'
+log_file = 'ping_reboot.log'
 
 # You can change it
 hostname1 = "8.8.8.8"
@@ -35,10 +37,12 @@ if os.geteuid() != 0:
 def healthcheck(hostname):
     return ['ping', hostname, '-c', '1']
 
+
 print(f'{style.HEADER}==============================================')
 print(f'Started at: {datetime.now()}{style.ENDC}\n')
 
 while True:
+    sys.stdout = open(f'{log_directory}/{log_file}', 'a+')
     check1 = subprocess.run(healthcheck(hostname1), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if check1.returncode == 0:
         fail_count = 0
@@ -56,3 +60,4 @@ while True:
         else:
             print(f'{style.OKCYAN}[*] {datetime.now()} - Success... {recover.stdout}')
     time.sleep(sleep_time)
+    sys.stdout.close()

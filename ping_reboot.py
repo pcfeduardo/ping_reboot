@@ -33,7 +33,7 @@ if os.geteuid() != 0:
     sys.exit(1)
 
 def healthcheck(hostname):
-    return ['ping', hostname, '-c', '1', '-t', '3']
+    return ['ping', hostname, '-c', '1']
 
 print(f'{style.HEADER}==============================================')
 print(f'Started at: {datetime.now()}{style.ENDC}\n')

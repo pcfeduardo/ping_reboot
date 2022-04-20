@@ -11,7 +11,7 @@ log_file = 'ping_reboot.log'
 # You can change it
 hostname1 = "8.8.8.8"
 hostname2 = "1.1.1.1"
-sleep_time = 5
+sleep_time = 10
 max_failure = 10
 
 class style():

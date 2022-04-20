@@ -10,7 +10,7 @@ fail_count = 0
 hostname1 = "8.8.8.8"
 hostname2 = "1.1.1.1"
 sleep_time = 5
-max_failure = 1
+max_failure = 10
 
 class style():
     HEADER = '\033[95m'

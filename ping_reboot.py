@@ -11,7 +11,7 @@ log_file = 'ping_reboot.log'
 # You can change it
 hostname1 = "8.8.8.8"
 hostname2 = "1.1.1.1"
-sleep_time = 10
+sleep_time = 5
 max_failure = 10
 
 class style():
@@ -37,6 +37,16 @@ if os.geteuid() != 0:
 def healthcheck(hostname):
     return ['ping', hostname, '-c', '1']
 
+def module_load():
+    subprocess.run(['modprobe', 'broadcom'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run(['modprobe', 'tg3'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run(['modprobe', 'ptp'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+def interface(status):
+    subprocess.run(['systemctl', status, 'network.services'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+module_load()
+interface('start')
 
 print(f'{style.HEADER}==============================================')
 print(f'Started at: {datetime.now()}{style.ENDC}\n')
@@ -52,6 +62,9 @@ while True:
         if check2.returncode > 0:
             print(f'{style.WARNING}[*] {datetime.now()} - {hostname1} and {hostname2} are down!{style.ENDC}')
             fail_count = fail_count + 1
+    if fail_count == (max_failure - 2):
+        module_load()
+        interface('restart')
     if fail_count == max_failure:
         print(f'{style.FAIL}[*] {datetime.now()} - Maximum failures have been reached at {max_failure}. Trying to recover the connection{style.ENDC}')
         recover = subprocess.run(restore_connection, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

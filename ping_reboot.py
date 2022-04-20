@@ -26,7 +26,7 @@ restore_connection = ['reboot']
 
 if sys.version_info.major < 3:
     print('You need python version 3 or higher!')
-    sys.exit(0)
+    sys.exit(1)
 
 if os.geteuid() != 0:
     print(f'{style.FAIL}Sorry, the script only works as root! :({style.ENDC}')
